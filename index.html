@@ -13,14 +13,24 @@
 <!-- HEADER -->
 <header class="bg-gradient-to-r from-black to-red-900 p-4 shadow-lg flex justify-between items-center">
 
-  <h1 class="text-xl font-bold">🎸 Music Store</h1>
+ <h1 class="text-3xl font-black tracking-wider uppercase text-red-100">
+   Music Store
+</h1>
+ <!--busqueda-->
+  <div class="relative w-1/3">
+  
+  <span class="absolute left-3 top-2.5 text-gray-400">
+    🔍
+  </span>
 
   <input 
     id="searchInput"
     type="text"
     placeholder="Buscar..."
-    class="p-2 rounded bg-black border border-red-900 text-white w-1/3"
+    class="p-2 pl-10 rounded bg-black border border-red-900 text-white w-full text-lg"
   />
+
+</div>
 
   <button onclick="toggleCart()" class="bg-red-800 px-4 py-2 rounded">
     🛒 (<span id="cartCount">0</span>)
@@ -45,7 +55,7 @@
     <div id="productList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3"></div>
   </main>
 
-  <!-- CARRITO DESLIZABLE -->
+  <!-- CARRITO -->
   <aside id="cart"
     class="fixed right-0 top-0 h-full w-80 bg-gray-900 border-l border-red-900 p-4 transform translate-x-full transition duration-300">
 

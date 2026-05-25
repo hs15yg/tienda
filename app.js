@@ -1,12 +1,12 @@
 const products = [
-  { id: 1, name: "Guitarra Fender", price: 1200, category: "guitarras", image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d" },
-  { id: 2, name: "Guitarra Acústica", price: 800, category: "guitarras", image: "guitarra.jpeg" },
-  { id: 3, name: "Teclado Yamaha", price: 1500, category: "teclados", image: "https://images.unsplash.com/photo-1513785077080-84c5b4e0c1d6" },
-  { id: 4, name: "Piano Digital", price: 2000, category: "teclados", image: "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0" },
-  { id: 5, name: "Batería", price: 2500, category: "percusion", image: "https://images.unsplash.com/photo-1519892300165-cb5542fb47c7" },
-  { id: 6, name: "Congas", price: 600, category: "percusion", image: "https://images.unsplash.com/photo-1612225330812-01a9c6b355a3" },
-  { id: 7, name: "Saxofón", price: 1800, category: "viento", image: "saxofono-alto-yamaha.jpg" },
-  { id: 8, name: "trompeta", price: 1000000, category:"viento",image:"TrompetaConductor_1024x.webp" }
+  { id: 1, name: "Guitarra Fender", price: 1600000, category: "guitarras", image: "https://www.txirula.com/img/cms/Blog/electr%20principiantes/19985_1.jpg" },
+  { id: 2, name: "Guitarra Acústica", price: 300000, category: "guitarras", image: "https://elsonido.net/2-large_default/comprar-guitarra-acustica-c40-yamaha-en-colombia.jpg" },
+  { id: 3, name: "Teclado Yamaha", price: 150000, category: "teclados", image: "https://www.pianosbogota.com/wp-content/uploads/2022/09/TECLADO-YAMAHA-PSR-EW425-Bogota.jpg" },
+  { id: 4, name: "Piano ", price: 6000000, category: "teclados", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8tq1_WcWCb9xZRQBTFb5ZSXFWi_yYvH_EdA&s" },
+  { id: 5, name: "Batería", price: 4000000, category: "percusion", image: "https://www.musicanarias.com/12077-thickbox_default/bateria-yamaha-stage-custom-birch-sbp0f5-deep-blue-sb.jpg" },
+  { id: 6, name: "Congas", price: 1450000, category: "percusion", image: "https://ortizo.com.co/cdn/shop/files/Productosnuevos_10_72e5739c-f76e-4c52-85d0-d4d835a20a10.jpg?v=1766601930&width=480" },
+  { id: 7, name: "Saxofón", price: 3500000, category: "viento", image: "https://image.made-in-china.com/202f0j00HuGcpYrFYNzS/High-End-Professional-Grade-Alto-Saxophone-Brass-Instrument-Sax.webp" },
+  { id: 8, name: "Trompeta", price: 1000000, category:"viento",image:"https://allmusic.com.co/cdn/shop/files/S652599b581fb44a3acd67579e790d112H_800x.webp?v=1716407032" }
 ];
 
 let cart = [];
@@ -30,10 +30,10 @@ function renderProducts(list) {
 
         <div class="p-2 flex flex-col flex-1">
 
-          <h3 class="font-bold text-sm">${p.name}</h3>
-          <p class="text-xs text-gray-400">${p.category}</p>
+          <h3 class="font-bold text-base">${p.name}</h3>
+          <p class="text-sm text-gray-400">${p.category}</p>
 
-          <p class="text-red-400 font-bold mt-auto">$${p.price}</p>
+          <p class="text-red-400 font-bold text-lg mt-auto">$${p.price}</p>
 
           <button onclick="addToCart(${p.id})"
             class="mt-2 bg-red-800 hover:bg-red-600 py-1 rounded text-sm">
@@ -41,22 +41,43 @@ function renderProducts(list) {
           </button>
 
         </div>
-
       </div>
     `;
   });
 }
 
-// ➕ CARRITO
+// ➕ AGREGAR
 function addToCart(id) {
   const product = products.find(p => p.id === id);
-  cart.push(product);
+  const existing = cart.find(item => item.id === id);
+
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ ...product, qty: 1 });
+  }
+
+  updateCart();
+}
+
+// ➖ RESTAR
+function decrease(id) {
+  const item = cart.find(p => p.id === id);
+
+  if (!item) return;
+
+  item.qty -= 1;
+
+  if (item.qty <= 0) {
+    cart = cart.filter(p => p.id !== id);
+  }
+
   updateCart();
 }
 
 // ❌ ELIMINAR
-function removeFromCart(index) {
-  cart.splice(index, 1);
+function removeItem(id) {
+  cart = cart.filter(p => p.id !== id);
   updateCart();
 }
 
@@ -64,23 +85,59 @@ function removeFromCart(index) {
 function updateCart() {
   cartItems.innerHTML = "";
   let sum = 0;
+  let count = 0;
 
-  cart.forEach((item, i) => {
-    sum += item.price;
+  cart.forEach(item => {
+    sum += item.price * item.qty;
+    count += item.qty;
 
     cartItems.innerHTML += `
-      <div class="flex justify-between border-b border-red-900 py-2 text-sm">
-        <span>${item.name}</span>
-        <button onclick="removeFromCart(${i})" class="text-red-500">X</button>
+      <div class="border-b border-red-900 py-2 text-sm">
+
+        <div class="flex justify-between">
+          <span>${item.name}</span>
+          <button onclick="removeItem(${item.id})" class="text-red-500">X</button>
+        </div>
+
+        <div class="flex items-center justify-between mt-2">
+          <button onclick="decrease(${item.id})" class="px-2 bg-gray-700 rounded">-</button>
+          <span>${item.qty}</span>
+          <button onclick="addToCart(${item.id})" class="px-2 bg-red-700 rounded">+</button>
+        </div>
+
       </div>
     `;
   });
 
-  cartCount.innerText = cart.length;
+  cartCount.innerText = count;
   total.innerText = sum;
+
+  renderBuyButton(count);
 }
 
-// 🔎 BUSCAR + FILTRO
+// 🟢 BOTÓN COMPRAR
+function renderBuyButton(count) {
+  let btn = document.getElementById("buyBtn");
+
+  if (!btn) {
+    btn = document.createElement("button");
+    btn.id = "buyBtn";
+    btn.className = "mt-4 w-full py-2 rounded bg-green-600";
+    btn.innerText = "Comprar";
+
+    btn.onclick = () => {
+      alert("Compra realizada 🎉");
+      cart = [];
+      updateCart();
+    };
+
+    document.getElementById("cart").appendChild(btn);
+  }
+
+  btn.disabled = count === 0;
+}
+
+// 🔎 FILTRO
 function updateView() {
   let value = searchInput.value.toLowerCase();
 
@@ -97,23 +154,22 @@ function updateView() {
 
 searchInput.addEventListener("input", updateView);
 
-// 🏷️ FILTROS
 function filterCategory(cat) {
   currentCategory = cat;
   updateView();
 }
 
-// 🛒 CARRO DESLIZABLE
+// 🛒 CART TOGGLE
 function toggleCart() {
-  const cart = document.getElementById("cart");
+  const cartBox = document.getElementById("cart");
 
-  if (cart.classList.contains("translate-x-full")) {
-    cart.classList.remove("translate-x-full");
+  if (cartBox.classList.contains("translate-x-full")) {
+    cartBox.classList.remove("translate-x-full");
   } else {
-    cart.classList.add("translate-x-full");
+    cartBox.classList.add("translate-x-full");
   }
 }
 
 // INIT
 renderProducts(products);
-     
+updateCart();
